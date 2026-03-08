@@ -40,8 +40,7 @@
                         <span id="notification-badge"
                             class="absolute -top-1 -right-1 hidden h-3 w-3 rounded-full border border-slate-950 bg-red-500"></span>
                     </button>
-                    <div id="notifications-dropdown"
-                        class="notifications-dropdown hidden w-80 rounded-2xl border border-white/5 bg-slate-900/90 shadow-2xl">
+                    <div id="notifications-dropdown" style="display: none;" class="notifications-dropdown w-80 rounded-2xl border border-white/5 bg-slate-900/90 shadow-2xl">
                         <div class="flex items-center justify-between border-b border-white/5 px-4 py-3">
                             <h4 class="text-sm font-semibold text-white">Notifications</h4>
                             <button id="mark-read-btn" class="text-xs font-semibold text-accent">Mark all</button>
@@ -128,7 +127,7 @@
     </main>
 </div>
 
-<div id="add-money-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/70 px-4 py-10">
+<div id="add-money-modal" style="display: none;" class="fixed inset-0 z-40 items-center justify-center bg-black/70 px-4 py-10">
     <div class="w-full max-w-2xl rounded-3xl bg-slate-950/90 p-8 shadow-2xl">
         <div class="flex items-center justify-between">
             <div>
@@ -144,7 +143,7 @@
         <div class="mt-6 space-y-4">
             <div class="space-y-1">
                 <label class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Amount (NGN)</label>
-                <input id="deposit-amount" type="number" min="1" placeholder="? 0.00"
+                <input id="deposit-amount" type="number" min="1" placeholder="NGN 0.00"
                     class="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
             </div>
             <div id="card-deposit-section" class="space-y-3">
@@ -171,5 +170,7 @@
     </div>
 </div>
 {% endblock %}
+
+
 
 

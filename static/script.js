@@ -371,14 +371,14 @@ function setupEventListeners() {
     const confirmDepositBtn = document.getElementById('confirm-deposit');
     const depositAmountInput = document.getElementById('deposit-amount');
 
-    if (addMoneyBtn) {
+    if (addMoneyBtn && addMoneyModal) {
         addMoneyBtn.addEventListener('click', () => {
             addMoneyModal.style.display = 'flex';
             if (depositAmountInput) depositAmountInput.focus();
         });
     }
 
-    if (cancelModalBtn) {
+    if (cancelModalBtn && addMoneyModal) {
         cancelModalBtn.addEventListener('click', () => {
             addMoneyModal.style.display = 'none';
             if (depositAmountInput) depositAmountInput.value = '';
@@ -476,7 +476,7 @@ function setupEventListeners() {
     }
 
     const cancelTransferBtn = document.getElementById('cancel-modal-transfer');
-    if (cancelTransferBtn) {
+    if (cancelTransferBtn && addMoneyModal) {
         cancelTransferBtn.addEventListener('click', () => {
             addMoneyModal.style.display = 'none';
         });
@@ -506,7 +506,7 @@ function setupEventListeners() {
     if (notificationBtn && notificationDropdown) {
         notificationBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            notificationDropdown.classList.toggle('hidden');
+            notificationDropdown.style.display = notificationDropdown.style.display === 'none' ? 'block' : 'none';
         });
     }
 
@@ -521,7 +521,7 @@ function setupEventListeners() {
     }
 
     document.addEventListener('click', () => {
-        if (notificationDropdown) notificationDropdown.classList.add('hidden');
+        if (notificationDropdown) notificationDropdown.style.display = 'none';
     });
 
     if (notificationDropdown) {
@@ -570,6 +570,7 @@ function setupEventListeners() {
         });
     }
 }
+
 
 
 
