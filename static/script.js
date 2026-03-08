@@ -1,4 +1,5 @@
 let cashFlowChartInstance = null;
+const USER_DATA_TIMEOUT_MS = 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Load common user data if elements exist (e.g., sidebar)
@@ -78,45 +79,92 @@ function showToast(message, type = 'success') {
 
     container.appendChild(toast);
 
-    // Animate in
     setTimeout(() => {
         toast.style.transform = 'translateY(0)';
         toast.style.opacity = '1';
     }, 50);
 
-    // Animate out
     setTimeout(() => {
         toast.style.transform = 'translateY(-20px)';
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 400);
-    }, 5000); // Increased to 5 seconds
+    }, 5000);
+}
+
+function fetchJsonWithTimeout(url, timeoutMs) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    return fetch(url, { signal: controller.signal }).finally(() => {
+        clearTimeout(timeoutId);
+    });
+}
+
+function setDashboardPendingState() {
+    const setIfPresent = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
+    };
+
+    setIfPresent('user-name', 'Loading...');
+    setIfPresent('user-membership', 'Loading account...');
+    setIfPresent('balance-amount', 'Loading...');
+    setIfPresent('income-amount', 'Loading...');
+    setIfPresent('expenses-amount', 'Loading...');
+    setIfPresent('savings-amount', 'Loading...');
+    setIfPresent('savings-percent-trend', 'Loading...');
+}
+
+function setDashboardErrorState() {
+    const setIfPresent = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
+    };
+
+    setIfPresent('user-name', 'Account unavailable');
+    setIfPresent('user-membership', 'Could not load account data');
+    setIfPresent('balance-amount', 'Unavailable');
+    setIfPresent('income-amount', 'Unavailable');
+    setIfPresent('expenses-amount', 'Unavailable');
+    setIfPresent('savings-amount', 'Unavailable');
+    setIfPresent('savings-percent-trend', 'N/A');
+
+    const progressEl = document.getElementById('savings-progress');
+    if (progressEl) progressEl.style.width = '0%';
 }
 
 async function loadUserData() {
+    const onDashboard = Boolean(document.getElementById('balance-amount'));
+    if (onDashboard) {
+        setDashboardPendingState();
+    }
+
     try {
-        const response = await fetch('/api/user_data');
+        const response = await fetchJsonWithTimeout('/api/user_data', USER_DATA_TIMEOUT_MS);
         if (response.status === 401) {
             window.location.href = '/login';
             return;
         }
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+        }
+
         const data = await response.json();
 
-        // Helper to safely set text
         const safeSetText = (id, text) => {
             const el = document.getElementById(id);
             if (el) el.innerText = text;
         };
 
-        safeSetText('user-name', data.name);
+        safeSetText('user-name', data.name || 'Account');
         safeSetText('user-membership', data['2fa_enabled'] ? 'Verified Account' : 'Standard Account');
-        safeSetText('card-user-name', data.name);
+        safeSetText('card-user-name', data.name || 'Cardholder');
 
-        // Populate inputs if on settings page
         const nameInput = document.getElementById('settings-name');
-        if (nameInput) nameInput.value = data.name;
+        if (nameInput) nameInput.value = data.name || '';
 
         const emailInput = document.getElementById('settings-email');
-        if (emailInput) emailInput.value = data.email;
+        if (emailInput) emailInput.value = data.email || '';
 
         if (data.balance !== undefined) {
             safeSetText('balance-amount', formatCurrency(data.balance));
@@ -131,18 +179,19 @@ async function loadUserData() {
         const progressEl = document.getElementById('savings-progress');
         if (progressEl) progressEl.style.width = `${data.savings_percent}%`;
 
-        // Update 2FA status in settings if present
         const tfaBtn = document.getElementById('tfa-status-btn');
         if (tfaBtn) {
             tfaBtn.innerText = data['2fa_enabled'] ? 'Active' : 'Enable';
             tfaBtn.className = data['2fa_enabled'] ? 'status-badge status-completed' : 'btn-secondary';
         }
-
     } catch (error) {
         console.error('Error fetching user data:', error);
+        if (onDashboard) {
+            setDashboardErrorState();
+            showToast('Could not load dashboard data. Check connection and refresh.', 'error');
+        }
     }
 }
-
 async function loadTransactions() {
     try {
         const response = await fetch('/api/transactions');
@@ -521,5 +570,10 @@ function setupEventListeners() {
         });
     }
 }
+
+
+
+
+
 
 
