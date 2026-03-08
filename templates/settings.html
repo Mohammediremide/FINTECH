@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Finova</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar glass" style="border-radius: 0;">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h2>Finova</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="/" class="nav-item">
+                    <span class="icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="/transactions" class="nav-item">
+                    <span class="icon">💸</span>
+                    Transactions
+                </a>
+                <a href="/investments" class="nav-item">
+                    <span class="icon">📈</span>
+                    Investments
+                </a>
+                <a href="/cards" class="nav-item">
+                    <span class="icon">💳</span>
+                    Cards
+                </a>
+                <a href="/settings" class="nav-item active">
+                    <span class="icon">⚙️</span>
+                    Settings
+                </a>
+            </nav>
+            <div class="user-profile">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User Profile" class="avatar">
+                <div class="user-info">
+                    <h4 id="user-name">Loading...</h4>
+                    <p id="user-membership">Loading...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1>Settings</h1>
+                    <p class="subtitle">Customize your experience and manage security.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-container">
+                        <button class="btn-icon glassy" id="notification-btn">
+                            🔔
+                            <span id="notification-badge"></span>
+                        </button>
+                        <!-- Notifications Dropdown -->
+                        <div id="notifications-dropdown" class="notifications-dropdown" style="display: none;">
+                            <div
+                                style="padding: 1.2rem; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+                                <h4 style="margin: 0; font-size: 1rem;">Notifications</h4>
+                                <button id="mark-read-btn"
+                                    style="background: none; border: none; color: var(--accent-1); cursor: pointer; font-size: 0.8rem; font-weight: 500;">Mark
+                                    all as read</button>
+                            </div>
+                            <div id="notifications-list" class="notifications-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="glass" style="padding: 2rem; max-width: 600px;">
+                <h3 style="margin-bottom: 2rem;">Profile Settings</h3>
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Full
+                            Name</label>
+                        <input type="text" id="settings-name" value="" class="glass"
+                            style="width: 100%; padding: 12px; border: 1px solid var(--glass-border); color: white; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Email
+                            Address</label>
+                        <input type="email" id="settings-email" value="" class="glass"
+                            style="width: 100%; padding: 12px; border: 1px solid var(--glass-border); color: white; border-radius: 8px;">
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 12px;">
+                        <div>
+                            <p style="font-weight: 500;">Two-Factor Authentication</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">Add an extra layer of security
+                                to your account.</p>
+                        </div>
+                        <button id="tfa-status-btn" onclick="window.location.href='/setup-2fa'"
+                            class="btn-secondary">Enable</button>
+                    </div>
+                </div>
+                <button class="btn-primary" style="margin-top: 2rem; width: 100%;">Save Changes</button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Money Modal -->
+    <div id="add-money-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass" style="max-width: 450px;">
+            <h3>Deposit Funds</h3>
+            <p
+                style="color: var(--accent-1); font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 1.2rem; font-weight: 600;">
+                Note: test</p>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Choose a payment method to add money to your
+                account.</p>
+
+            <div class="payment-methods" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <button class="btn-secondary method-btn active" data-method="card" style="flex: 1; padding: 10px;">💳
+                    Card</button>
+                <button class="btn-secondary method-btn" data-method="transfer" style="flex: 1; padding: 10px;">🏦
+                    Transfer</button>
+            </div>
+
+            <div id="card-deposit-section">
+                <div class="input-group" style="margin-bottom: 1rem;">
+                    <span class="input-prefix">₦</span>
+                    <input type="number" id="deposit-amount" placeholder="Amount" step="0.01">
+                </div>
+
+                <div class="glass" style="padding: 1rem; margin-bottom: 1.5rem;">
+                    <label
+                        style="display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">CARD
+                        DETAILS</label>
+                    <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19"
+                        style="width: 100%; background: none; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: white; margin-bottom: 0.8rem;">
+                    <div style="display: flex; gap: 0.8rem;">
+                        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5"
+                            style="flex: 1; background: none; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: white;">
+                        <input type="text" id="card-cvv" placeholder="CVV" maxlength="3"
+                            style="flex: 1; background: none; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: white;">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="cancel-modal">Cancel</button>
+                    <button class="btn-primary" id="confirm-deposit">Pay Securely</button>
+                </div>
+            </div>
+
+            <div id="transfer-deposit-section" style="display: none;">
+                <div class="glass" style="padding: 1.5rem; text-align: left; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Transfer to the account below:</p>
+                    <div style="margin-bottom: 0.8rem;">
+                        <span style="color: var(--text-secondary);">Bank:</span> <strong>Wema Bank (Finova)</strong>
+                    </div>
+                    <div style="margin-bottom: 0.8rem;">
+                        <span style="color: var(--text-secondary);">Account Number:</span> <strong
+                            id="copy-acc">0123456789</strong>
+                        <button onclick="navigator.clipboard.writeText('0123456789'); showToast('Account copied!')"
+                            style="background:none; border:none; color:var(--accent-1); cursor:pointer; font-size: 0.8rem; margin-left: 5px;">Copy</button>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-secondary);">Name:</span> <strong>Finova Global Ltd</strong>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label
+                        style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">SENDER
+                        NAME</label>
+                    <input type="text" id="sender-name" placeholder="Name on your bank account"
+                        style="width: 100%; background: none; border: 1px solid var(--glass-border); padding: 12px; border-radius: 8px; color: white;">
+                </div>
+
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.5rem;">After transfer, click
+                    "I've sent the money" and it will be confirmed within 5-10 mins.</p>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="cancel-modal-transfer">Cancel</button>
+                    <button class="btn-primary" id="confirm-transfer">I've sent the money</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

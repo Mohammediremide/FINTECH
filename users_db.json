@@ -1,0 +1,45 @@
+{
+    "admin@finova.com": {
+        "name": "Admin User",
+        "password": "$2b$12$oQi0oCUIDQieGNtQy9gkSeQ5LI0yH45/AQA82iqSL4dK1AE5mu.dK",
+        "is_admin": true,
+        "2fa_enabled": false,
+        "2fa_secret": "7L5MX5NHTVTLV6TYTZK7BEVMUN3TB64Y",
+        "balance": 0.0,
+        "income": 0.0,
+        "expenses": 0.0,
+        "savings_goal": 10000.0,
+        "savings_percent": 0,
+        "transactions": []
+    },
+    "odewunmimohammed@gmail.com": {
+        "name": "Odewunmi Mohammed",
+        "password": "$2b$12$M55EGq1P1ueVRmD4JqjwHOPeOsUBppPJy/b4DLkw6rKzz9bux7.mq",
+        "is_admin": false,
+        "2fa_enabled": true,
+        "2fa_secret": "GU4B2NN2CJHBZJZQDUKUCVIIRTZNHBMH",
+        "balance": 200.0,
+        "income": 200.0,
+        "expenses": 0.0,
+        "savings_goal": 10000.0,
+        "savings_percent": 0,
+        "transactions": [
+            {
+                "title": "Deposit (Card)",
+                "category": "Deposit",
+                "icon": "\ud83d\udcb3",
+                "date": "Just now",
+                "status": "Completed",
+                "amount": 100.0
+            },
+            {
+                "title": "Manual Deposit",
+                "category": "Deposit",
+                "icon": "\ud83d\udcb5",
+                "date": "Just now",
+                "status": "Completed",
+                "amount": 100.0
+            }
+        ]
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "admin@finova.com": [
+        {
+            "id": 1,
+            "title": "Welcome Admin",
+            "message": "Welcome to the Finova Admin Panel.",
+            "time": "1 hour ago",
+            "is_read": false
+        }
+    ],
+    "odewunmimohammed@gmail.com": [
+        {
+            "id": 3,
+            "title": "Deposit Successful",
+            "message": "Your deposit of \u20a6100.00 via Card has been processed.",
+            "time": "Just now",
+            "is_read": false
+        },
+        {
+            "id": 1,
+            "title": "Welcome to Finova",
+            "message": "Thank you for joining Finova! Start by exploring your dashboard.",
+            "time": "2 hours ago",
+            "is_read": true
+        },
+        {
+            "id": 2,
+            "title": "Security Tip",
+            "message": "Enable 2FA in settings to keep your account extra secure.",
+            "time": "1 hour ago",
+            "is_read": true
+        }
+    ]
+}

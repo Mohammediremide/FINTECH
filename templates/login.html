@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Finova</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-main);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-1);
+        }
+
+        .flash-messages {
+            margin-bottom: 1rem;
+            color: var(--negative);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card glass">
+            <div class="auth-header">
+                <img src="/static/company_hero.png" alt="Finova Hero"
+                    style="width: 100%; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <h2>Welcome to Finova</h2>
+            </div>
+
+            <!-- Hidden container for flash messages to avoid JS lint errors -->
+            <div id="flash-data" style="display: none;">
+                {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                <span class="flash-msg">{{ message }}</span>
+                {% endfor %}
+                {% endwith %}
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const messages = document.querySelectorAll('.flash-msg');
+                    messages.forEach(m => showToast(m.innerText, 'error'));
+                });
+            </script>
+
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" class="form-input" required placeholder="admin@finova.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Sign In</button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+                Don't have an account? <a href="/signup" style="color: var(--accent-1); text-decoration: none;">Sign
+                    Up</a>
+            </p>
+        </div>
+    </div>
+    <div id="toast-container"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

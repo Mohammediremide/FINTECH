@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup 2FA - Finova</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .setup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-main);
+        }
+
+        .setup-card {
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="setup-container">
+        <div class="setup-card glass">
+            <h2>Enable 2FA</h2>
+            <p style="color: var(--text-secondary); margin: 1rem 0 2rem;">Scan this QR code with Google Authenticator or
+                Authy.</p>
+
+            <div class="qr-code">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Or enter this code
+                    manually:</p>
+                <div class="glass"
+                    style="padding: 10px; font-family: monospace; letter-spacing: 2px; color: var(--accent-1); font-weight: 700;">
+                    {{ secret }}
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <input type="text" id="setup-token" class="glass"
+                    style="padding: 12px; border: 1px solid var(--glass-border); color: white; border-radius: 8px; text-align: center; width: 100%; font-size: 1.2rem;"
+                    placeholder="Enter 6-digit code">
+            </div>
+
+            <button onclick="enable2FA()" class="btn-primary" style="width: 100%;">Verify and Enable</button>
+            <a href="/"
+                style="display: block; margin-top: 1rem; color: var(--text-secondary); text-decoration: none;">Skip for
+                now</a>
+        </div>
+    </div>
+
+    <div id="toast-container"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    </div>
+    <script src="/static/script.js"></script>
+    <script>
+        async function enable2FA() {
+            const tokenInput = document.getElementById('setup-token');
+            const token = tokenInput.value.trim();
+
+            if (!token || token.length !== 6) {
+                showToast('Please enter a valid 6-digit code.', 'error');
+                return;
+            }
+
+            const res = await fetch('/enable-2fa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('2FA Enabled Successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                showToast(data.message || 'Invalid token or error.', 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Auth - Finova</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-main);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            text-align: center;
+            font-size: 1.5rem;
+            letter-spacing: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card glass">
+            <h2>Security Verification</h2>
+            <p style="color: var(--text-secondary); margin: 1rem 0 2rem;">Enter the 6-digit code from your authenticator
+                app.</p>
+
+
+
+            <form action="/verify-2fa" method="POST">
+                <input type="text" name="token" class="form-input" required maxlength="6" autofocus
+                    placeholder="000000">
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 2rem;">Verify</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-container"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    </div>
+    <script src="/static/script.js"></script>
+
+    <!-- Hidden container for flash messages to avoid JS lint errors -->
+    <div id="flash-data" style="display: none;">
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+        <span class="flash-msg">{{ message }}</span>
+        {% endfor %}
+        {% endwith %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = document.querySelectorAll('.flash-msg');
+            messages.forEach(m => showToast(m.innerText, 'error'));
+        });
+    </script>
+</body>
+
+</html>
