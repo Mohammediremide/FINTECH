@@ -66,9 +66,6 @@ def login():
         
         user = users_db.get(email)
         if user and bcrypt.check_password_hash(user['password'], password):
-            if user['2fa_enabled']:
-                session['temp_user_email'] = email
-                return redirect(url_for('verify_2fa'))
             
             session['user_email'] = email
             return redirect(url_for('index'))
@@ -290,5 +287,6 @@ def mark_notifications_read():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
 
 
