@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Finova{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#38bdf8',
+                        'accent-dark': '#0f172a',
+                        'accent-secondary': '#8b5cf6',
+                        'glass-surface': 'rgba(15, 23, 42, 0.85)'
+                    }
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --text-secondary: #94a3b8;
+            --negative: #ef4444;
+            --positive: #10b981;
+            --neutral: #f59e0b;
+            --bg-main: #020617;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background-color: var(--bg-main);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-white">
+    <div class="min-h-screen w-full bg-[#020617] text-white">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+
+    <script src="/static/script.js"></script>
+    {% with flashes = get_flashed_messages(with_categories=true) %}
+        {% if flashes %}
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    {% for category, message in flashes %}
+                        showToast({{ message|tojson }}, '{{ category }}');
+                    {% endfor %}
+                });
+            </script>
+        {% endif %}
+    {% endwith %}
+</body>
+
+</html>

@@ -1,268 +1,173 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finova - FinTech Analytics</title>
-    <meta name="description" content="A premium FinTech Analytics Dashboard">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+{% block title %}Dashboard � Finova{% endblock %}
 
-<body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar glass" style="border-radius: 0;">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <h2>Finova</h2>
+{% block content %}
+<div class="flex min-h-screen">
+    <aside class="w-64 border-r border-white/10 bg-slate-900/70 p-6">
+        <div class="space-y-4">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">Finova</p>
+                <h1 class="text-2xl font-bold text-white">Dashboard</h1>
             </div>
-            <nav class="nav-menu">
-                <a href="/" class="nav-item active">
-                    <span class="icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="/transactions" class="nav-item">
-                    <span class="icon">💸</span>
-                    Transactions
-                </a>
-                <a href="/investments" class="nav-item">
-                    <span class="icon">📈</span>
-                    Investments
-                </a>
-                <a href="/cards" class="nav-item">
-                    <span class="icon">💳</span>
-                    Cards
-                </a>
-                <a href="/settings" class="nav-item">
-                    <span class="icon">⚙️</span>
-                    Settings
-                </a>
+            <nav class="space-y-2 text-sm font-medium text-slate-300">
+                <a href="/" class="block rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-white transition hover:border-accent">Overview</a>
+                <a href="/transactions" class="block rounded-2xl border border-white/0 px-4 py-2 hover:border-accent">Transactions</a>
+                <a href="/investments" class="block rounded-2xl border border-white/0 px-4 py-2 hover:border-accent">Investments</a>
+                <a href="/cards" class="block rounded-2xl border border-white/0 px-4 py-2 hover:border-accent">Cards</a>
+                <a href="/settings" class="block rounded-2xl border border-white/0 px-4 py-2 hover:border-accent">Settings</a>
+                <a href="/logout" class="block rounded-2xl border border-white/0 px-4 py-2 hover:border-accent">Logout</a>
             </nav>
-            <div class="user-profile">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User Profile" class="avatar">
-                <div class="user-info">
-                    <h4 id="user-name">Loading...</h4>
-                    <p id="user-membership">Loading...</p>
+            <div class="mt-8 space-y-1 rounded-2xl border border-white/5 bg-slate-900/60 p-4">
+                <p class="text-xs uppercase text-slate-400">Account</p>
+                <h2 class="text-lg font-semibold" id="user-name">Loading...</h2>
+                <p class="text-sm text-slate-400" id="user-membership">Loading...</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 space-y-8 px-8 py-10">
+        <header class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold text-white">Hello, Finova</h2>
+                <p class="text-sm text-slate-400">Track your accounts and move money in seconds.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button id="notification-btn"
+                        class="btn-icon relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-slate-900/80 text-xl text-white transition hover:border-accent">
+                        ??
+                        <span id="notification-badge"
+                            class="absolute -top-1 -right-1 hidden h-3 w-3 rounded-full border border-slate-950 bg-red-500"></span>
+                    </button>
+                    <div id="notifications-dropdown"
+                        class="notifications-dropdown hidden w-80 rounded-2xl border border-white/5 bg-slate-900/90 shadow-2xl">
+                        <div class="flex items-center justify-between border-b border-white/5 px-4 py-3">
+                            <h4 class="text-sm font-semibold text-white">Notifications</h4>
+                            <button id="mark-read-btn" class="text-xs font-semibold text-accent">Mark all</button>
+                        </div>
+                        <div id="notifications-list" class="max-h-72 space-y-0.5 overflow-y-auto p-3"></div>
+                    </div>
+                </div>
+                <button id="add-money-btn"
+                    class="rounded-2xl bg-gradient-to-r from-accent to-accent-secondary px-5 py-2 text-sm font-semibold text-slate-950 transition hover:brightness-110">
+                    + Add Money
+                </button>
+            </div>
+        </header>
+
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-2xl bg-slate-900/70 p-5 shadow-2xl">
+                <p class="text-sm uppercase tracking-widest text-slate-400">Total Balance</p>
+                <p id="balance-amount" class="mt-3 text-3xl font-bold">...</p>
+            </div>
+            <div class="rounded-2xl bg-slate-900/70 p-5 shadow-2xl">
+                <p class="text-sm uppercase tracking-widest text-slate-400">Monthly Income</p>
+                <p id="income-amount" class="mt-3 text-3xl font-bold">...</p>
+            </div>
+            <div class="rounded-2xl bg-slate-900/70 p-5 shadow-2xl">
+                <p class="text-sm uppercase tracking-widest text-slate-400">Expenses</p>
+                <p id="expenses-amount" class="mt-3 text-3xl font-bold">...</p>
+            </div>
+            <div class="rounded-2xl bg-slate-900/70 p-5 shadow-2xl">
+                <div class="flex items-center justify-between text-sm uppercase tracking-widest text-slate-400">
+                    <span>Savings Goal</span>
+                    <span id="savings-percent-trend" class="text-xs text-emerald-400">...</span>
+                </div>
+                <p id="savings-amount" class="mt-3 text-3xl font-bold">...</p>
+                <div class="mt-4 h-2 rounded-full bg-white/5">
+                    <div id="savings-progress" class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-500" style="width:0%"></div>
                 </div>
             </div>
-        </aside>
+        </section>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="top-header">
+        <section class="space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h1>Overview</h1>
-                    <p class="subtitle">Welcome back, here's your financial summary.</p>
+                    <h3 class="text-xl font-semibold text-white">Cash Flow</h3>
+                    <p class="text-sm text-slate-400">Yearly overview of inflow and outflow.</p>
                 </div>
-                <div class="header-actions" style="position: relative;">
-                    <div class="notification-container">
-                        <button class="btn-icon glassy" id="notification-btn">
-                            🔔
-                            <span id="notification-badge"></span>
-                        </button>
-                        <!-- Notifications Dropdown -->
-                        <div id="notifications-dropdown" class="notifications-dropdown" style="display: none;">
-                            <div
-                                style="padding: 1.2rem; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
-                                <h4 style="margin: 0; font-size: 1rem;">Notifications</h4>
-                                <button id="mark-read-btn"
-                                    style="background: none; border: none; color: var(--accent-1); cursor: pointer; font-size: 0.8rem; font-weight: 500;">Mark
-                                    all as read</button>
-                            </div>
-                            <div id="notifications-list" class="notifications-list">
-                                <!-- Populated by JS -->
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn-primary" id="add-money-btn">+ Add Money</button>
+                <select id="chart-period"
+                    class="rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-2 text-sm text-white focus:border-accent focus:outline-none">
+                    <option>This Year</option>
+                    <option>Last Year</option>
+                </select>
+            </div>
+            <div class="rounded-3xl bg-slate-900/70 p-5 shadow-2xl">
+                <div class="h-72">
+                    <canvas id="cashFlowChart"></canvas>
                 </div>
-            </header>
+            </div>
+        </section>
 
-            <!-- KPI Cards -->
-            <section class="kpi-grid">
-                <div class="kpi-card glass">
-                    <div class="kpi-header">
-                        <span class="kpi-title">Total Balance</span>
-                        <span class="trend positive">+12.5% ↗</span>
-                    </div>
-                    <div class="kpi-amount" id="balance-amount">...</div>
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-semibold text-white">Recent Activity</h3>
+                    <p class="text-sm text-slate-400">Last 10 transactions.</p>
                 </div>
-                <div class="kpi-card glass">
-                    <div class="kpi-header">
-                        <span class="kpi-title">Monthly Income</span>
-                        <span class="trend positive">+8.2% ↗</span>
-                    </div>
-                    <div class="kpi-amount" id="income-amount">...</div>
-                </div>
-                <div class="kpi-card glass">
-                    <div class="kpi-header">
-                        <span class="kpi-title">Total Expenses</span>
-                        <span class="trend negative">-3.1% ↘</span>
-                    </div>
-                    <div class="kpi-amount" id="expenses-amount">...</div>
-                </div>
-                <div class="kpi-card glass">
-                    <div class="kpi-header">
-                        <span class="kpi-title">Savings Goal</span>
-                        <span class="trend neutral" id="savings-percent-trend">...</span>
-                    </div>
-                    <div class="kpi-amount" id="savings-amount">...</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="savings-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Charts Section -->
-            <section class="charts-section">
-                <div class="chart-container glass">
-                    <div class="chart-header">
-                        <h3>Cash Flow Analysis</h3>
-                        <select class="chart-select" id="chart-period">
-                            <option value="This Year">This Year</option>
-                            <option value="Last 6 Months">Last 6 Months</option>
-                        </select>
-                    </div>
-                    <div class="canvas-wrapper">
-                        <canvas id="cashFlowChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="side-panel">
-                    <div class="card glass my-cards" style="height: 100%;">
-                        <h3>My Cards</h3>
-                        <div class="credit-card">
-                            <div class="card-top">
-                                <span>Finova Premium</span>
-                                <span class="card-logo">VISA</span>
-                            </div>
-                            <div class="card-chip"></div>
-                            <div class="card-number">**** **** **** 4289</div>
-                            <div class="card-bottom">
-                                <span id="card-user-name">Loading...</span>
-                                <span>12/28</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Recent Transactions -->
-            <section class="transactions-section glass">
-                <div class="section-header">
-                    <h3>Recent Transactions</h3>
-                    <a href="#" class="view-all" id="view-all-btn">View All</a>
-                </div>
-                <div class="table-container">
-                    <table class="transactions-table">
+                <a href="/transactions" class="text-sm font-semibold text-accent">View all</a>
+            </div>
+            <div class="rounded-3xl bg-slate-900/70 p-4 shadow-2xl">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-sm">
                         <thead>
-                            <tr>
-                                <th>Transaction</th>
-                                <th>Category</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Amount</th>
+                            <tr class="text-xs uppercase tracking-widest text-slate-500">
+                                <th class="px-4 py-2">Title</th>
+                                <th class="px-4 py-2">Category</th>
+                                <th class="px-4 py-2">Date</th>
+                                <th class="px-4 py-2">Status</th>
+                                <th class="px-4 py-2">Amount</th>
                             </tr>
                         </thead>
-                        <tbody id="transactionsBody">
-                            <!-- Populated by JS -->
-                        </tbody>
+                        <tbody id="transactionsBody" class="divide-y divide-white/5 text-slate-200"></tbody>
                     </table>
                 </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Add Money Modal -->
-    <div id="add-money-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content glass" style="max-width: 450px;">
-            <h3>Deposit Funds</h3>
-            <p
-                style="color: var(--accent-1); font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 1.2rem; font-weight: 600;">
-                Note: test</p>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Choose a payment method to add money to your
-                account.</p>
-
-            <div class="payment-methods" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <button class="btn-secondary method-btn active" data-method="card" style="flex: 1; padding: 10px;">💳
-                    Card</button>
-                <button class="btn-secondary method-btn" data-method="transfer" style="flex: 1; padding: 10px;">🏦
-                    Transfer</button>
             </div>
+        </section>
+    </main>
+</div>
 
-            <div id="card-deposit-section">
-                <div class="input-group" style="margin-bottom: 1rem;">
-                    <span class="input-prefix">₦</span>
-                    <input type="number" id="deposit-amount" placeholder="Amount" step="0.01">
-                </div>
-
-                <div class="glass" style="padding: 1rem; margin-bottom: 1.5rem;">
-                    <label
-                        style="display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">CARD
-                        DETAILS</label>
-                    <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19"
-                        style="width: 100%; background: none; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: white; margin-bottom: 0.8rem;">
-                    <div style="display: flex; gap: 0.8rem;">
-                        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5"
-                            style="flex: 1; background: none; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: white;">
-                        <input type="text" id="card-cvv" placeholder="CVV" maxlength="3"
-                            style="flex: 1; background: none; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: white;">
-                    </div>
-                </div>
-
-                <div class="modal-actions">
-                    <button class="btn-secondary" id="cancel-modal">Cancel</button>
-                    <button class="btn-primary" id="confirm-deposit">Pay Securely</button>
-                </div>
+<div id="add-money-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/70 px-4 py-10">
+    <div class="w-full max-w-2xl rounded-3xl bg-slate-950/90 p-8 shadow-2xl">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-500">Deposit</p>
+                <h3 class="text-2xl font-semibold">Add funds</h3>
             </div>
-
-            <div id="transfer-deposit-section" style="display: none;">
-                <div class="glass" style="padding: 1.5rem; text-align: left; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Transfer to the account below:</p>
-                    <div style="margin-bottom: 0.8rem;">
-                        <span style="color: var(--text-secondary);">Bank:</span> <strong>Wema Bank (Finova)</strong>
-                    </div>
-                    <div style="margin-bottom: 0.8rem;">
-                        <span style="color: var(--text-secondary);">Account Number:</span> <strong
-                            id="copy-acc">0123456789</strong>
-                        <button onclick="navigator.clipboard.writeText('0123456789'); showToast('Account copied!')"
-                            style="background:none; border:none; color:var(--accent-1); cursor:pointer; font-size: 0.8rem; margin-left: 5px;">Copy</button>
-                    </div>
-                    <div>
-                        <span style="color: var(--text-secondary);">Name:</span> <strong>Finova Global Ltd</strong>
-                    </div>
+            <button id="cancel-modal" class="text-sm font-semibold text-slate-300 transition hover:text-accent">Close</button>
+        </div>
+        <div class="mt-6 flex gap-3">
+            <button data-method="card" class="method-btn flex-1 rounded-2xl border border-white/10 bg-slate-900/70 py-2 text-sm font-semibold text-white transition hover:border-accent">Card</button>
+            <button data-method="transfer" class="method-btn flex-1 rounded-2xl border border-white/10 bg-slate-900/70 py-2 text-sm font-semibold text-white transition hover:border-accent">Transfer</button>
+        </div>
+        <div class="mt-6 space-y-4">
+            <div class="space-y-1">
+                <label class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Amount (NGN)</label>
+                <input id="deposit-amount" type="number" min="1" placeholder="? 0.00"
+                    class="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+            </div>
+            <div id="card-deposit-section" class="space-y-3">
+                <input id="card-number" type="text" placeholder="Card number"
+                    class="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+                <div class="flex gap-3">
+                    <input id="card-expiry" type="text" placeholder="MM/YY"
+                        class="flex-1 rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+                    <input id="card-cvv" type="text" placeholder="CVV"
+                        class="flex-1 rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
                 </div>
-
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label
-                        style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">SENDER
-                        NAME</label>
-                    <input type="text" id="sender-name" placeholder="Name on your bank account"
-                        style="width: 100%; background: none; border: 1px solid var(--glass-border); padding: 12px; border-radius: 8px; color: white;">
-                </div>
-
-                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.5rem;">After transfer, click
-                    "I've sent the money" and it will be confirmed within 5-10 mins.</p>
-                <div class="modal-actions">
-                    <button class="btn-secondary" id="cancel-modal-transfer">Cancel</button>
-                    <button class="btn-primary" id="confirm-transfer">I've sent the money</button>
+                <button id="confirm-deposit" class="w-full rounded-2xl bg-gradient-to-r from-accent to-accent-secondary py-3 text-sm font-semibold text-slate-950">Confirm payment</button>
+            </div>
+            <div id="transfer-deposit-section" class="hidden space-y-3">
+                <p class="text-sm text-slate-300">Send a manual bank transfer and notify us for verification.</p>
+                <input id="sender-name" type="text" placeholder="Account name"
+                    class="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+                <div class="flex gap-3">
+                    <button id="confirm-transfer" class="flex-1 rounded-2xl bg-gradient-to-r from-accent to-accent-secondary py-3 text-sm font-semibold text-slate-950">Notify transfer</button>
+                    <button id="cancel-modal-transfer" class="flex-1 rounded-2xl border border-white/10 py-3 text-sm font-semibold text-white">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Add Toast Container for Notifications -->
-    <div id="toast-container"
-        style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
-    </div>
-
-    <script src="/static/script.js"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}

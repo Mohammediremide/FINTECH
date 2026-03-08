@@ -1,80 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two-Factor Auth - Finova</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--bg-main);
-        }
+{% block title %}Verify 2FA – Finova{% endblock %}
 
-        .auth-card {
-            width: 100%;
-            max-width: 400px;
-            padding: 2.5rem;
-            text-align: center;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: white;
-            outline: none;
-            text-align: center;
-            font-size: 1.5rem;
-            letter-spacing: 0.5rem;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="auth-container">
-        <div class="auth-card glass">
-            <h2>Security Verification</h2>
-            <p style="color: var(--text-secondary); margin: 1rem 0 2rem;">Enter the 6-digit code from your authenticator
-                app.</p>
-
-
-
-            <form action="/verify-2fa" method="POST">
-                <input type="text" name="token" class="form-input" required maxlength="6" autofocus
-                    placeholder="000000">
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 2rem;">Verify</button>
-            </form>
-        </div>
+{% block content %}
+<section class="flex min-h-screen items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md space-y-6 rounded-3xl bg-slate-900/70 p-10 shadow-2xl">
+        <h2 class="text-2xl font-semibold text-white">Two-factor authentication</h2>
+        <p class="text-sm text-slate-400">Enter the code from your authenticator app to continue.</p>
+        <form action="/verify-2fa" method="POST" class="space-y-4">
+            <input type="text" name="token" maxlength="6" required placeholder="Enter 2FA code"
+                class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+            <button type="submit"
+                class="w-full rounded-2xl bg-gradient-to-r from-accent to-accent-secondary py-3 text-sm font-semibold text-slate-950">Verify</button>
+        </form>
+        <p class="text-center text-xs text-slate-400">Lost access? Contact support to reset your authenticator.</p>
     </div>
-
-    <div id="toast-container"
-        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
-    </div>
-    <script src="/static/script.js"></script>
-
-    <!-- Hidden container for flash messages to avoid JS lint errors -->
-    <div id="flash-data" style="display: none;">
-        {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-        <span class="flash-msg">{{ message }}</span>
-        {% endfor %}
-        {% endwith %}
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const messages = document.querySelectorAll('.flash-msg');
-            messages.forEach(m => showToast(m.innerText, 'error'));
-        });
-    </script>
-</body>
-
-</html>
+</section>
+{% endblock %}

@@ -1,107 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Finova</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--bg-main);
-        }
+{% block title %}Sign Up – Finova{% endblock %}
 
-        .auth-card {
-            width: 100%;
-            max-width: 400px;
-            padding: 2.5rem;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: white;
-            outline: none;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent-1);
-        }
-    </style>
-</head>
-
-<body>
-    <div class="auth-container">
-        <div class="auth-card glass">
-            <div class="auth-header">
-                <img src="/static/company_hero.png" alt="Finova Hero"
-                    style="width: 100%; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                <h2>Create Account</h2>
-            </div>
-
-            <form action="/signup" method="POST">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" name="name" class="form-input" required placeholder="Alex Carter">
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email" class="form-input" required placeholder="alex@example.com">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-input" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
-                </div>
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
-            </form>
-            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
-                Already have an account? <a href="/login" style="color: var(--accent-1); text-decoration: none;">Sign
-                    In</a>
-            </p>
+{% block content %}
+<section class="flex min-h-screen items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md space-y-8 rounded-3xl bg-[rgba(15,23,42,0.75)] p-10 shadow-2xl backdrop-blur-xl">
+        <div class="text-center space-y-3">
+            <img src="/static/company_hero.png" alt="Finova Hero" class="mx-auto h-16 w-16 rounded-2xl shadow-lg" />
+            <h2 class="text-3xl font-semibold tracking-tight text-white">Create your account</h2>
+            <p class="text-sm text-slate-300">Join Finova to track your goals and stay on top of every penny.</p>
         </div>
+        <form action="/signup" method="POST" class="space-y-5 pt-4">
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-slate-200">Full Name</label>
+                <input type="text" name="name" required placeholder="Odewunmi Mohammed"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+            </div>
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-slate-200">Email Address</label>
+                <input type="email" name="email" required placeholder="you@example.com"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+            </div>
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-slate-200">Password</label>
+                <input type="password" name="password" required placeholder="••••••••"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none" />
+            </div>
+            <button type="submit"
+                class="w-full rounded-2xl bg-gradient-to-r from-accent to-accent-secondary py-3 text-sm font-semibold text-slate-950 transition hover:brightness-110">
+                Get Started
+            </button>
+        </form>
+        <p class="text-center text-xs text-slate-400">
+            Already have an account?
+            <a href="/login" class="font-semibold text-white underline-offset-4 hover:text-accent">Sign In</a>
+        </p>
     </div>
-    <div id="toast-container"
-        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
-    </div>
-    <script src="/static/script.js"></script>
-    <!-- Hidden container for flash messages to avoid JS lint errors -->
-    <div id="flash-data" style="display: none;">
-        {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-        <span class="flash-msg">{{ message }}</span>
-        {% endfor %}
-        {% endwith %}
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const messages = document.querySelectorAll('.flash-msg');
-            messages.forEach(m => showToast(m.innerText, 'error'));
-        });
-    </script>
-</body>
-
-</html>
+</section>
+{% endblock %}
