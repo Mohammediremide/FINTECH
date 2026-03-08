@@ -132,7 +132,7 @@ def verify_2fa():
 
 @app.route('/setup-2fa')
 def setup_2fa():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return redirect(url_for('login'))
     
     user = users_db[session['user_email']]
@@ -149,7 +149,7 @@ def setup_2fa():
 
 @app.route('/enable-2fa', methods=['POST'])
 def enable_2fa():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return jsonify({'success': False}), 401
     
     token = request.json.get('token', '').strip()
@@ -165,7 +165,7 @@ def enable_2fa():
 
 @app.route('/admin')
 def admin_dashboard():
-    if 'user_email' not in session or not users_db[session['user_email']]['is_admin']:
+    if 'user_email' not in session or session['user_email'] not in users_db or not users_db[session['user_email']]['is_admin']:
         return redirect(url_for('index'))
     
     total_users = len(users_db)
@@ -174,25 +174,25 @@ def admin_dashboard():
 
 @app.route('/transactions')
 def nav_transactions():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return redirect(url_for('login'))
     return render_template('transactions.html')
 
 @app.route('/investments')
 def nav_investments():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return redirect(url_for('login'))
     return render_template('investments.html')
 
 @app.route('/cards')
 def nav_cards():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return redirect(url_for('login'))
     return render_template('cards.html')
 
 @app.route('/settings')
 def nav_settings():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return redirect(url_for('login'))
     return render_template('settings.html')
 
@@ -200,7 +200,7 @@ def nav_settings():
 
 @app.route('/api/user_data')
 def get_user_data():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return jsonify({}), 401
     user = users_db[session['user_email']]
     return jsonify({
@@ -216,13 +216,13 @@ def get_user_data():
 
 @app.route('/api/transactions')
 def get_transactions():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return jsonify([]), 401
     return jsonify(users_db[session['user_email']]['transactions'])
 
 @app.route('/api/add_money', methods=['POST'])
 def add_money():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return jsonify({'success': False}), 401
     
     data = request.json
@@ -237,7 +237,7 @@ def add_money():
     user['transactions'].insert(0, {
         'title': f'Deposit ({method})',
         'category': 'Deposit',
-        'icon': '💳' if method == 'Card' else '🏦',
+        'icon': 'CARD' if method == 'Card' else 'BANK',
         'date': 'Just now',
         'status': 'Completed',
         'amount': amount
@@ -252,7 +252,7 @@ def add_money():
     all_notifs[user_email].insert(0, {
         'id': len(all_notifs[user_email]) + 1,
         'title': 'Deposit Successful',
-        'message': f'Your deposit of ₦{amount:,.2f} via {method} has been processed.',
+        'message': f'Your deposit of NGN {amount:,.2f} via {method} has been processed.',
         'time': 'Just now',
         'is_read': False
     })
@@ -268,7 +268,7 @@ def get_chart_data():
 
 @app.route('/api/notifications')
 def get_notifications():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return jsonify([]), 401
     
     all_notifs = load_notifications()
@@ -277,7 +277,7 @@ def get_notifications():
 
 @app.route('/api/mark_notifications_read', methods=['POST'])
 def mark_notifications_read():
-    if 'user_email' not in session:
+    if 'user_email' not in session or session['user_email'] not in users_db:
         return jsonify({'success': False}), 401
     
     all_notifs = load_notifications()
@@ -290,3 +290,5 @@ def mark_notifications_read():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+

@@ -39,7 +39,7 @@ async function loadNotifications() {
 
         list.innerHTML = notifications.map(n => `
             <div style="padding: 12px; border-bottom: 1px solid var(--glass-border); ${n.is_read ? 'opacity: 0.7;' : ''}">
-                <p style="font-weight: 600; font-size: 0.9rem; margin-bottom: 3px;">${n.title} ${!n.is_read ? '<span style="color: var(--negative);">•</span>' : ''}</p>
+                <p style="font-weight: 600; font-size: 0.9rem; margin-bottom: 3px;">${n.title} ${!n.is_read ? '<span style="color: var(--negative);">&bull;</span>' : ''}</p>
                 <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">${n.message}</p>
                 <small style="color: var(--accent-1); font-size: 0.7rem; display: block; margin-top: 5px;">${n.time}</small>
             </div>
@@ -126,7 +126,7 @@ async function loadUserData() {
         }
 
         const trendEl = document.getElementById('savings-percent-trend');
-        if (trendEl) trendEl.innerText = `${data.savings_percent}% 🎯`;
+        if (trendEl) trendEl.innerText = `${data.savings_percent}%`;
 
         const progressEl = document.getElementById('savings-progress');
         if (progressEl) progressEl.style.width = `${data.savings_percent}%`;
@@ -294,7 +294,7 @@ function renderChart(labels, incomeData, expenseData) {
                     },
                     ticks: {
                         callback: function (value) {
-                            return '₦' + value / 1000 + 'k';
+                            return 'NGN ' + value / 1000 + 'k';
                         }
                     }
                 }
@@ -457,7 +457,7 @@ function setupEventListeners() {
     if (notificationBtn && notificationDropdown) {
         notificationBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            notificationDropdown.style.display = notificationDropdown.style.display === 'none' ? 'block' : 'none';
+            notificationDropdown.classList.toggle('hidden');
         });
     }
 
@@ -472,7 +472,7 @@ function setupEventListeners() {
     }
 
     document.addEventListener('click', () => {
-        if (notificationDropdown) notificationDropdown.style.display = 'none';
+        if (notificationDropdown) notificationDropdown.classList.add('hidden');
     });
 
     if (notificationDropdown) {
@@ -521,3 +521,5 @@ function setupEventListeners() {
         });
     }
 }
+
+
