@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session, send_from_directory
 from flask_bcrypt import Bcrypt
 import pyotp
 import qrcode
@@ -193,6 +193,14 @@ def nav_settings():
         return redirect(url_for('login'))
     return render_template('settings.html')
 
+
+@app.route('/script.js')
+def legacy_script_js():
+    return send_from_directory('static', 'script.js')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'company_hero.png')
 # --- API Endpoints ---
 
 @app.route('/api/user_data')
@@ -287,6 +295,8 @@ def mark_notifications_read():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+
 
 
 
