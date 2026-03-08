@@ -1,5 +1,5 @@
 let cashFlowChartInstance = null;
-const USER_DATA_TIMEOUT_MS = 1000;
+const USER_DATA_TIMEOUT_MS = 10000;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Load common user data if elements exist (e.g., sidebar)
@@ -570,6 +570,7 @@ function setupEventListeners() {
         });
     }
 }
+
 
 
 
